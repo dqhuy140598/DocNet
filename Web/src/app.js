@@ -14,7 +14,7 @@ const flash = require('connect-flash')
 const session = require('express-session')
     //Bodyparser
 app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+app.use(express.urlencoded({ extended: false }))
     // Setup static directory to serve
 app.use(express.static(publicDirectoryPath))
     // Setup ejs engine and views location

@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 
 const documentSchema = mongoose.Schema({
-    documentTitle: {
+    title: {
         type:String,
         require:true
     },
     content:{
-        type:String,
+        type:[String],
         require:true,
     },
     imageFile:{
@@ -14,6 +14,10 @@ const documentSchema = mongoose.Schema({
     },
     keyPhrase:{
         type:[String],
+    },
+    user:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'User'
     }
 })
 

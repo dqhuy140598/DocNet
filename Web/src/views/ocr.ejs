@@ -232,7 +232,7 @@
                     <a class="nav-link" href="/ocr">OCR</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="/keyword">Keyphrase Extractor</a>
+                    <a class="nav-link" href="/keywords">Keyphrase Extractor</a>
                   </li>
                 </ul>
               </div>
@@ -244,7 +244,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="../../pages/charts/chartjs.html">
+              <a class="nav-link" href="/database">
                 <i class="menu-icon typcn typcn-th-large-outline"></i>
                 <span class="menu-title">Your Storage</span>
               </a>
@@ -335,8 +335,18 @@
                       <div id="editor">
                       
                       </div>
+                      <div class="form-group" style="margin-top: 10px">
+                        <div class="input-group">
+                          <div class="input-group-prepend bg-info">
+                            <span class="input-group-text bg-transparent">
+                              <i class="mdi mdi-shield-outline text-white"></i>
+                            </span>
+                          </div>
+                          <input id="title" type="text" class="form-control" placeholder="Document Title"" aria-label="Username" aria-describedby="colored-addon1">
+                        </div>
+                      </div>
                       <div class="template-demo">
-                          <button type="submit" name="submit" class="btn btn-primary btn-fw">
+                          <button type="submit" name="submit" class="btn btn-primary btn-fw" onclick="save()">
                             <i class="mdi mdi-upload"></i>Save
                           </button>
                           <button type="submit" name="submit" class="btn btn-dark btn-fw" onclick="download()">
@@ -426,6 +436,7 @@
                         $('#result_image').css('display', '');
                         $('#myeditor').css('display', '');
                         $('.modal').modal('hide');
+                        window.content = data
                         CKEDITOR.model.change( writer => {
                             const root = CKEDITOR.model.document.getRoot();
                             const insertPosition = CKEDITOR.model.document.selection.getFirstPosition();
@@ -465,26 +476,6 @@
                 console.error( error );
             } );
       </script>   
-      <!-- <script>
-
-          function print() {
-              const filename  = 'ThisIsYourPDFFilename.pdf';
-              var Submit = function() {
-                  html2canvas(document.querySelector("#editor"), {
-                    onrendered: function(canvas) {
-                      console.log("in here")
-                      document.body.appendChild(canvas);
-                      let pdf = new jsPDF('p', 'mm', 'a4');
-                      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 211, 298);
-                      pdf.save(filename);
-                    }
-                  });
-              };
-              Submit()
-            }
-
-                  
-      </script> -->
 
       <script>
           function download(){
@@ -513,6 +504,38 @@
               });
           } 
       
+      </script>
+
+      <script>
+        function save(){
+              var documentTitle = document.getElementById("title").value
+              var content = window.content.result
+              var image = window.content.filename
+
+              var object = {documentTitle,content,image}
+       
+              $.ajax({  
+                  type:'POST',
+                  url: '/save',
+                  data: JSON.stringify(object),
+                  // data: fd,
+                  contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                  // cache:false,
+                  // contentType: false,
+                  processData: false,
+                  // enctype: 'multipart/form-data',
+                  success:function(data){
+                      console.log(data)
+                      window.location.href = "/database"
+                  },
+                  error: function(data){
+                      console.log("error");
+                      console.log(data);
+                  }
+              });
+        }
+
+
       </script>
 
   </body>

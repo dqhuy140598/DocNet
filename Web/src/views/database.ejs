@@ -14,7 +14,6 @@
     <link rel="stylesheet" href="../../../assets/vendors/css/vendor.bundle.addons.css">
     <!-- endinject -->
     <!-- plugin css for this page -->
-    <link rel="stylesheet" href="../../../assets/vendors/icheck/skins/all.css">
     <!-- End plugin css for this page -->
     <!-- inject:css -->
     <link rel="stylesheet" href="../../../assets/css/shared/style.css">
@@ -23,28 +22,7 @@
     <link rel="stylesheet" href="../../../assets/css/demo_1/style.css">
     <!-- End Layout styles -->
     <link rel="shortcut icon" href="../../../assets/images/favicon.png" />
-    <link rel="stylesheet" href="../../../css/tmp.css">
-    <style>
-      .bd-example-modal-lg .modal-dialog{
-        display: table;
-        position: relative;
-        margin: 0 auto;
-        top: calc(50% - 24px);
-      }
-      
-      .bd-example-modal-lg .modal-dialog .modal-content{
-        background-color: transparent;
-        border: none;
-      }
-    </style>
-
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-
-<script src="https://cdn.ckeditor.com/ckeditor5/15.0.0/decoupled-document/ckeditor.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.debug.js"></script>
+  </head>
   <body>
     <div class="container-scroller">
       <!-- partial:../../partials/_navbar.html -->
@@ -201,7 +179,7 @@
         <nav class="sidebar sidebar-offcanvas" id="sidebar">
           <ul class="nav">
             <li class="nav-item nav-profile">
-              <a href="/me" class="nav-link">
+              <a href="#" class="nav-link">
                 <div class="profile-image">
                   <img class="img-xs rounded-circle" src="../../../assets/images/faces/face8.jpg" alt="profile image">
                   <div class="dot-indicator bg-success"></div>
@@ -231,7 +209,7 @@
                     <a class="nav-link" href="/ocr">OCR</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="/keywords">Keyphrase Extractor</a>
+                    <a class="nav-link" href="/keywords">Keypharse Extractor</a>
                   </li>
                 </ul>
               </div>
@@ -243,7 +221,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="../../pages/charts/chartjs.html">
+              <a class="nav-link" href="/database">
                 <i class="menu-icon typcn typcn-th-large-outline"></i>
                 <span class="menu-title">Your Storage</span>
               </a>
@@ -290,46 +268,47 @@
         </nav>
         <!-- partial -->
         <div class="main-panel">
-          <div class="content-wrapper">
-            <div class="row">
-              <div class="col-md-8 grid-margin stretch-card">
-                <div class="card">
-                  <div class="card-body">
-                      <h3 class="display1 text-info icon-md">Editor</h4>
-                      <div id="toolbar-container"></div>
-                      <div id="editor">
-                          <p>Your Content In Here.<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br></p>
-                      </div>
-                      <div class="template-demo">
-                          <button type="submit" name="submit" class="btn btn-primary btn-fw">
-                            <i class="mdi mdi-upload"></i>Save
-                          </button>
-                          <button type="submit" name="submit" class="btn btn-dark btn-fw" onclick="generateKeywords();modal()">
-                              <i class="mdi mdi-check"></i>Generete Keypharse
-                            </button>
-                            <div class="modal fade bd-example-modal-lg" data-backdrop="static" data-keyboard="false" tabindex="-1">
-                                <div class="modal-dialog modal-sm">
-                                    <div class="modal-content" style="width: 48px">
-                                        <span class="fa fa-spinner fa-spin fa-3x"></span>
-                                    </div>
+          <div class="content-wrapper"> 
+                <div class="row">
+                        <div class="col-lg-6 grid-margin stretch-card">
+                                <div class="card">
+                                  <div class="card-body">
+                                    <h3 class="display1 text-info icon-md">Your Documents</h3>
+                                    <table class="table table-hover">
+                                      <thead>
+                                        <tr>
+                                          <th>#</th>
+                                          <th>Title</th>
+                                          <th>Content</th>
+                                          <th>Keypharse</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        <% listDocuments.forEach(function(doc){ %>
+                                            <tr>
+                                            <td>*</td>
+                                            <td><%= doc.title %></td>
+                                            <td class="text-danger">
+                                                <a href="/database/<%= doc._id %>" >Click To See</a>
+                                            </td>
+                                             <td>
+                                                 <% if(doc.keyPhrase.length ==0){ %>
+                                                    <label class="badge badge-danger">None</label>
+                                                <% }  else { %>
+                                          
+                                                    <% doc.keyPhrase.forEach(function(key){ %>
+                                                        <label class="badge badge-success"><%= key %></label>
+                                                    <% }); %>
+                                                <% }%>
+                                            </td>
+                                            </tr> 
+                                        <% }); %>
+                                      </tbody>
+                                    </table>
+                                  </div>
                                 </div>
-                            </div>
-                      </div>
-                  </div>
+                              </div>
                 </div>
-           
-              </div>
-              <div id="key" class="col-md-4 grid-margin stretch-card" style="display:none;">
-                  <div class="card">
-                      <div class="card-body">
-                          <h3 class="display1 text-info icon-md">Key Words</h4>
-                            <div id="ren" class="form-group">
-                
-                            </div>
-                      </div>
-                    </div>
-              </div>
-            </div>
           </div>
           <!-- content-wrapper ends -->
           <!-- partial:../../partials/_footer.html -->
@@ -359,62 +338,5 @@
     <!-- endinject -->
     <!-- Custom js for this page-->
     <!-- End custom js for this page-->
-
-    <script>
-        let CKEDITOR
-        DecoupledEditor
-            .create( document.querySelector( '#editor' ) )
-            .then( editor => {
-                const toolbarContainer = document.querySelector( '#toolbar-container' );
-
-                toolbarContainer.appendChild( editor.ui.view.toolbar.element );
-                CKEDITOR = editor
-            } )
-            .catch( error => {
-                console.error( error );
-            } );
-      </script> 
-      <script>
-
-          function modal(){
-            $('.modal').modal('show');
-          }
-
-
-        function generateKeywords(){
-            var htmltext = CKEDITOR.getData()
-            htmltext = htmltext.replace(/<[^>]*>?/gm, ' ');
-            console.log(htmltext)
-            $.ajax({  
-                  type:'POST',
-                  url: '/keywords',
-                  data: JSON.stringify({"text":htmltext}),
-                  // data: fd,
-                  contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-                  // cache:false,
-                  // contentType: false,
-                  processData: false,
-                  // enctype: 'multipart/form-data',
-                  success:function(data){
-                     
-                      setTimeout(function(){
-                        $('#key').css('display', '');
-                        $('.modal').modal('hide');
-                        console.log(data)
-                        var div = document.getElementById("ren")
-                        for(var i =0;i<data.result.length;i++){
-                            div.innerHTML  += "  <div class=\"form-check form-check-flat\"><label class=\"form-check-label\"><input type=\"checkbox\" class=\"form-check-input\">"+ data.result[i] + "<i class=\"input-helper\"></i></label></div>"
-                        }
-                      },1000)
-                      
-                  },
-                  error: function(data){
-                      console.log("error");
-                      console.log(data);
-                  }
-              });
-        }
-
-      </script>
   </body>
 </html>

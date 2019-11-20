@@ -18,7 +18,8 @@ const UserSchema = new mongoose.Schema({
         default: Date.now
     },
     documents:{
-        type:[{type:mongoose.Schema.Types.ObjectId,ref:'Document'}]
+        type:[mongoose.Schema.Types.ObjectId],
+        ref:'Document'
     }
 })
 const User = mongoose.model('User', UserSchema)

@@ -7,11 +7,13 @@ var fs = require('fs');
 var pdf = require('html-pdf');
 var options = { format: 'letter' };
 
-var multer = require("multer");
+var multer = require("multer"); 
 
 const path = require('path')
 
 const uploadPath = path.join(path.dirname(__dirname),"../public/uploads")
+
+const Document = require('../config/models/Document');
 
 console.log(uploadPath)
 
@@ -79,11 +81,75 @@ router.post("/download",ensureAuthenticated,(req,res)=>{
       });
 })
 
+router.post("/save", async (req,res)=>{
+    const data = JSON.parse(Object.keys(req.body))
+    const object = {"title":data.documentTitle,"content":data.content,"imageFile":data.image,"user":req.user._id}
+    const document  =  new Document(object)
+    try{
+        const result = await document.save()
+        const user = await User.findById({_id:req.user._id})
+        user.documents.push(result._id)
+        const temp = await user.save()
+        return res.send("ok")
+    }
+    catch(err){
+        console.log(err)
+        return res.send("error")
+    }
+    
+})
+
+router.get("/database",ensureAuthenticated, async (req,res)=>{
+    try{
+        const listDocuments = await Document.find({user:req.user._id})
+        console.log(listDocuments)
+        return res.render("database",{listDocuments})
+    }
+    catch(err){
+        console.log(err);
+        return res.send(err)
+    }
+})
+
+router.get("/database/:id",ensureAuthenticated, async(req,res)=>{
+    const docId = req.params.id;
+    try{
+        const document = await Document.findById(docId);
+        return res.render("detail",{document});
+
+    }
+    catch(err){
+        return res.send("error")
+    }
+})
+
+
 
 
 router.get('/editor',(req,res)=>{
     return res.render('editor')
 })
+
+
+router.get("/keywords",(req,res)=>{
+    return res.render("keywords")
+})
+
+router.post("/keywords",(req,res)=>{
+    const data = JSON.parse(Object.keys(req.body))
+    request.post({uri:"http://localhost:3000/keywords",body:data.text},function(err,respone,body){
+        if(err){
+            console.log(err)
+            return res.send("error")
+        }
+        else{
+            console.log(respone.body)
+            const arrayString = respone.body.split(" ")
+            return res.send({"result":arrayString})
+        }
+    })
+})
+
 
 
 // Resgister Handle
