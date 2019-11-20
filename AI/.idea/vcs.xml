@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$/pretrained/CRAFT-pytorch" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/pretrained/deep-text-recognition-benchmark" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/pretrained/detection" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/pretrained/recognition" vcs="Git" />
+  </component>
+</project>

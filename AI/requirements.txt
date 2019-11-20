@@ -1,0 +1,9 @@
+torch
+torchvision
+opencv-python
+matplotlib
+scikit-image
+easydict
+natsort
+silx
+flask
