@@ -23,7 +23,28 @@
     <link rel="stylesheet" href="../../../assets/css/demo_1/style.css">
     <!-- End Layout styles -->
     <link rel="shortcut icon" href="../../../assets/images/favicon.png" />
-    <script src="https://cdn.ckeditor.com/ckeditor5/15.0.0/decoupled-document/ckeditor.js"></script>
+    <link rel="stylesheet" href="../../../css/tmp.css">
+    <style>
+      .bd-example-modal-lg .modal-dialog{
+        display: table;
+        position: relative;
+        margin: 0 auto;
+        top: calc(50% - 24px);
+      }
+      
+      .bd-example-modal-lg .modal-dialog .modal-content{
+        background-color: transparent;
+        border: none;
+      }
+    </style>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+
+<script src="https://cdn.ckeditor.com/ckeditor5/15.0.0/decoupled-document/ckeditor.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.0.272/jspdf.debug.js"></script>
 
   </head>
   <body>
@@ -229,44 +250,7 @@
                 <span class="menu-title">Your Storage</span>
               </a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="../../pages/tables/basic-table.html">
-                <i class="menu-icon typcn typcn-bell"></i>
-                <span class="menu-title">Tables</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="../../pages/icons/font-awesome.html">
-                <i class="menu-icon typcn typcn-user-outline"></i>
-                <span class="menu-title">Icons</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" data-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">
-                <i class="menu-icon typcn typcn-document-add"></i>
-                <span class="menu-title">User Pages</span>
-                <i class="menu-arrow"></i>
-              </a>
-              <div class="collapse" id="auth">
-                <ul class="nav flex-column sub-menu">
-                  <li class="nav-item">
-                    <a class="nav-link" href="../../pages/samples/blank-page.html"> Blank Page </a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="../../pages/samples/login.html"> Login </a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="../../pages/samples/register.html"> Register </a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="../../pages/samples/error-404.html"> 404 </a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="../../pages/samples/error-500.html"> 500 </a>
-                  </li>
-                </ul>
-              </div>
-            </li>
+           
           </ul>
         </nav>
         <!-- partial -->
@@ -284,16 +268,35 @@
                           <% }); %>  
                       </div>
                       <div class="template-demo">
-                          <button type="submit" name="submit" class="btn btn-primary btn-fw" disabled>
+                          <button type="submit" name="submit" class="btn btn-primary btn-fw" onclick="edit()" >
                             <i class="mdi mdi-upload"></i>Edit
                           </button>
-                          <button type="submit" name="submit" class="btn btn-dark btn-fw" disabled>
+                          <button type="submit" name="submit" class="btn btn-dark btn-fw" onclick="generateKeywords();modal()">
                               <i class="mdi mdi-check"></i>Generete Keypharse
                             </button>
+                            <div class="modal fade bd-example-modal-lg" data-backdrop="static" data-keyboard="false" tabindex="-1">
+                                <div class="modal-dialog modal-sm">
+                                    <div class="modal-content" style="width: 48px">
+                                        <span class="fa fa-spinner fa-spin fa-3x"></span>
+                                    </div>
+                                </div>
+                            </div>
                       </div>
                   </div>
                 </div>
            
+              </div>
+              <div id="key" class="col-md-4 grid-margin stretch-card" style="display:none;">
+                  <div class="card">
+                      <div class="card-body">
+                          <h3 class="display1 text-info icon-md">Key Words</h4>
+                            <form action="">
+                                <div id="ren" class="form-group">
+                    
+                                </div>
+                            </form>
+                      </div>
+                    </div>
               </div>
             </div>
           </div>
@@ -327,16 +330,106 @@
     <!-- End custom js for this page-->
 
     <script>
+       let CKEDITOR
         DecoupledEditor
             .create( document.querySelector( '#editor' ) )
             .then( editor => {
                 const toolbarContainer = document.querySelector( '#toolbar-container' );
 
                 toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+                CKEDITOR = editor
             } )
             .catch( error => {
                 console.error( error );
             } );
       </script> 
+       <script>
+
+        function modal(){
+          $('.modal').modal('show');
+        }
+
+
+      function generateKeywords(){
+          var htmltext = CKEDITOR.getData()
+          htmltext = htmltext.replace(/<[^>]*>?/gm, ' ');
+          console.log(htmltext)
+          $.ajax({  
+                type:'POST',
+                url: '/keywords',
+                data: JSON.stringify({"text":htmltext}),
+                // data: fd,
+                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                // cache:false,
+                // contentType: false,
+                processData: false,
+                // enctype: 'multipart/form-data',
+                success:function(data){
+                   
+                    setTimeout(function(){
+                      $('#key').css('display', '');
+                      $('.modal').modal('hide');
+                      console.log(data)
+                      var div = document.getElementById("ren")
+                      var string = ''
+                      for(var i =0;i<data.result.length;i++){
+                          string  += "  <div class=\"form-check form-check-flat\"><label class=\"form-check-label\"><input name=\"word[]\" type=\"checkbox\" class=\"form-check-input\">"+ data.result[i] + "<i class=\"input-helper\"></i></label></div>"
+                      }
+                      div.innerHTML = string
+                    },1000)
+                    
+                },
+                error: function(data){
+                    console.log("error");
+                    console.log(data);
+                }
+            });
+      }
+
+      function edit(){
+          const url = window.location.href;
+          var checkBoxValues = [];
+          var index = []
+          var listcheckbox = $("input[name='word[]']")
+          
+          for(var i=0;i<listcheckbox.length;i++){
+              console.log($(listcheckbox[i]).val())
+          }
+
+            console.log(listcheckbox);
+
+            console.log(checkBoxValues);
+          //  $.ajax({  
+          //       type:'POST',
+          //       url: url,
+          //       data: JSON.stringify({"text":htmltext}),
+          //       // data: fd,
+          //       contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+          //       // cache:false,
+          //       // contentType: false,
+          //       processData: false,
+          //       // enctype: 'multipart/form-data',
+          //       success:function(data){
+                   
+          //           setTimeout(function(){
+          //             $('#key').css('display', '');
+          //             $('.modal').modal('hide');
+          //             console.log(data)
+          //             var div = document.getElementById("ren")
+          //             for(var i =0;i<data.result.length;i++){
+          //                 div.innerHTML  += "  <div class=\"form-check form-check-flat\"><label class=\"form-check-label\"><input type=\"checkbox\" class=\"form-check-input\">"+ data.result[i] + "<i class=\"input-helper\"></i></label></div>"
+          //             }
+          //           },1000)
+                    
+          //       },
+          //       error: function(data){
+          //           console.log("error");
+          //           console.log(data);
+          //       }
+          //   });
+            
+      }
+
+    </script>
   </body>
 </html>
